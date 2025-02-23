@@ -17,7 +17,11 @@ qt_add_executable(QtVulkanApp
     vktrianglesurface.h vktrianglesurface.cpp
     spiralgenerator.h spiralgenerator.cpp
     apesadelgenerator.h apesadelgenerator.cpp
+    meshes/scene1.txt
+    meshes/door1.txt
+    meshes/door1_open.txt
 )
+
 # Define the shader files
 set(SHADER_FILES
     color.frag

@@ -87,7 +87,10 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
 {
     //mObjects.push_back(new VkTriangle());
     //mObjects.push_back(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/vertices_1.txt"));
-    mObjects.push_back(new SpiralGenerator(0,20,100));
+    //mObjects.push_back(new SpiralGenerator(0,20,100));
+
+    mObjects.push_back(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/scene1.txt"));
+    mObjects.push_back(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1_open.txt"));
 
     //mObjects.push_back((new ApeSadelGenerator(-1,1,0.2)));
 }
@@ -220,7 +223,7 @@ void RenderWindow::initResources()
     VkPipelineInputAssemblyStateCreateInfo ia;
     memset(&ia, 0, sizeof(ia));
     ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    ia.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+    ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     pipelineInfo.pInputAssemblyState = &ia;
 
     // The viewport and scissor will be set dynamically via vkCmdSetViewport/Scissor.
@@ -308,12 +311,13 @@ void RenderWindow::initSwapChainResources()
     mProjectionMatrix.perspective(25.0f,          sz.width() / (float) sz.height(), 0.01f, 100.0f);
     //Camera is -4 away from origo
     /**PLAY WITH THIS**/
-    mProjectionMatrix.translate(0, 0, -4);
+    mProjectionMatrix.translate(0, 1, -50);
 
     //Flip projection because of Vulkan's -Y axis
     mProjectionMatrix.scale(1.0f, -1.0f, 1.0);
 
-    mProjectionMatrix.rotate(0.f,0.f,0.f);
+    mProjectionMatrix.rotate(15,1,0);
+    mProjectionMatrix.rotate(165,0,1);
 }
 
 void RenderWindow::startNextFrame()
@@ -393,7 +397,8 @@ void RenderWindow::startNextFrame()
     mWindow->frameReady();
     mWindow->requestUpdate(); // render continuously, throttled by the presentation rate
 
-    mRotation += 1.0f; //set for next frame
+    //mRotation += 1.0f; //set for next frame
+    mProjectionMatrix.rotate(0.2,0,1);
 }
 
 VkShaderModule RenderWindow::createShader(const QString &name)
