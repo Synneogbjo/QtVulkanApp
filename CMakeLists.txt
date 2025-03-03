@@ -17,9 +17,18 @@ qt_add_executable(QtVulkanApp
     vktrianglesurface.h vktrianglesurface.cpp
     spiralgenerator.h spiralgenerator.cpp
     apesadelgenerator.h apesadelgenerator.cpp
-    meshes/scene1.txt
+    meshes/house.txt
     meshes/door1.txt
     meshes/door1_open.txt
+    player.h player.cpp
+    enemy.h enemy.cpp
+    pickup.h pickup.cpp
+    meshes/player.txt
+    meshes/floor.txt
+    object.h object.cpp
+    lerp.h lerp.cpp
+    pickup.h pickup.cpp
+
 )
 
 # Define the shader files

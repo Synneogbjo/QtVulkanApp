@@ -1,6 +1,10 @@
 #include "visualobject.h"
 #include "spiralgenerator.h"
 #include "apesadelgenerator.h"
+
+#include "player.h"
+#include "enemy.h"
+
 #include "RenderWindow.h"
 #include <QVulkanFunctions>
 #include <QFile>
@@ -23,7 +27,6 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 {
     return (v + byteAlign - 1) & ~(byteAlign - 1);
 }
-
 
 void RenderWindow::createBuffer(VkDevice logicalDevice, const VkDeviceSize uniAlign, VisualObject* visualObject, VkBufferUsageFlags usage)
 {
@@ -80,19 +83,98 @@ void RenderWindow::createBuffer(VkDevice logicalDevice, const VkDeviceSize uniAl
 }
 
 
+void RenderWindow::checkCollision()
+{
+    for (int i = 0; i < mObjects.size(); i++)
+    {
+        auto obj1 = mObjects.at(i);
+        if (!obj1) continue;
+
+        if (obj1->mCollisionRadius <= 0.f) continue;
+
+        QMatrix4x4 &matrix1 = obj1->mMesh->mMatrix;
+
+        for (int j = 0; j < mObjects.size(); j++)
+        {
+            if (i == j) continue;
+
+            object* obj2 = mObjects.at(j);
+            if (!obj2) continue;
+
+            if (obj2->mCollisionRadius <= 0.f) continue;
+
+            QMatrix4x4 &matrix2 = obj2->mMesh->mMatrix;
+
+            float distance = sqrt(pow(matrix1(0,3) - matrix2(0,3),2) + pow(matrix1(1,3) - matrix2(1,3), 2) + pow(matrix1(2,3) - matrix2(2,3), 2));
+
+            if (distance <= obj1->mCollisionRadius + obj2->mCollisionRadius)
+            {
+                if (auto player = static_cast<Player*>(obj1))
+                {
+                    qDebug() << "Player collided with " << obj2->mName;
+                }
+            }
+        }
+    }
+
+    object* player = mObjects.at(0);
+    QMatrix4x4 matrix1 = player->mMesh->mMatrix;
+
+    for (int j = 0; j < mPickups.size(); j++)
+    {
+        Pickup* obj2 = mPickups.at(j);
+        if (!obj2) continue;
+
+        if (obj2->mCollisionRadius <= 0.f) continue;
+
+        QMatrix4x4 &matrix2 = obj2->mMesh->mMatrix;
+
+        float distance = sqrt(pow(matrix1(0,3) - matrix2(0,3),2) + pow(matrix1(1,3) - matrix2(1,3), 2) + pow(matrix1(2,3) - matrix2(2,3), 2));
+
+        if (distance <= player->mCollisionRadius + obj2->mCollisionRadius)
+        {
+            GetPickup(obj2, j);
+        }
+    }
+
+}
+
+
+
 /*** RenderWindow class ***/
 
 RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
 	: mWindow(w)
 {
-    //mObjects.push_back(new VkTriangle());
-    //mObjects.push_back(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/vertices_1.txt"));
-    //mObjects.push_back(new SpiralGenerator(0,20,100));
+    //.push_back(new VkTriangle());
+    //.push_back(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/vertices_1.txt"));
+    //.push_back(new SpiralGenerator(0,20,100));
 
-    mObjects.push_back(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/scene1.txt"));
-    mObjects.push_back(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1_open.txt"));
+    AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/floor.txt"));
+    AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
+    AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt"));
 
-    //mObjects.push_back((new ApeSadelGenerator(-1,1,0.2)));
+    AppendObject(new Player("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "player", .4f));
+
+    std::vector<VKVertex> pathVertices1 = {{0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {5.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {5.f,0.f,3.f,0.f,0.f,0.f,0.f,0.f}};
+    std::vector<VKVertex> pathVertices2 = {{-5.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {-5.f,0.f,-5.f,0.f,0.f,0.f,0.f,0.f}};
+
+    AppendObject(new Enemy("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "enemy_1", .4f, pathVertices1, 0.005f));
+    AppendObject(new Enemy("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "enemy_2", .4f, pathVertices2, 0.005f));
+
+    std::vector<Pickup*> pickups = {new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "pickup_1", 1.f),
+                                    new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "pickup_2", 1.f),
+                                    new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "pickup_3", 1.f)};
+
+    pickups.at(0)->mMesh->mMatrix.translate({4.f,0.f,4.f});
+    pickups.at(1)->mMesh->mMatrix.translate({0.f,0.f,4.f});
+    pickups.at(2)->mMesh->mMatrix.translate({-4.f,0.f,4.f});
+
+    AppendPickup(pickups.at(0));
+    AppendPickup(pickups.at(1));
+    AppendPickup(pickups.at(2));
+
+    //.push_back((new ApeSadelGenerator(-1,1,0.2)));
 }
 
 
@@ -117,7 +199,7 @@ void RenderWindow::initResources()
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO; // Set the structure type
 
 
-    for (auto it : mObjects)
+    for (auto it : mMeshes)
     {
         createBuffer(logicalDevice, uniAlign, it);
     }
@@ -311,7 +393,7 @@ void RenderWindow::initSwapChainResources()
     mProjectionMatrix.perspective(25.0f,          sz.width() / (float) sz.height(), 0.01f, 100.0f);
     //Camera is -4 away from origo
     /**PLAY WITH THIS**/
-    mProjectionMatrix.translate(0, 1, -50);
+    mProjectionMatrix.translate(0, 1, -35);
 
     //Flip projection because of Vulkan's -Y axis
     mProjectionMatrix.scale(1.0f, -1.0f, 1.0);
@@ -368,16 +450,27 @@ void RenderWindow::startNextFrame()
 
 	//Set model matrix for first triangle
     //We make a temp of this to not mess up the original matrix
-    //QMatrix4x4 tempMatrix = mProjectionMatrix;
+    QMatrix4x4 tempMatrix = mProjectionMatrix;
     //tempMatrix.translate(-0.7f, 0, 0);
     //tempMatrix.rotate(mRotation, 0, 1, 0);
 
-    for (auto it : mObjects)
+    for (auto it : mMeshes)
     {
         mDeviceFunctions->vkCmdBindVertexBuffers(cmdBuf, 0, 1, &(it)->mBuffer, &vbOffset);
         setModelMatrix(mProjectionMatrix * (it)->mMatrix);
         mDeviceFunctions->vkCmdDraw(cmdBuf, (it)->mVertices.size(), 1, 0, 0);
     }
+
+    for (auto obj : mObjects)
+    {
+        Enemy* enemy = static_cast<Enemy*>(obj);
+
+        if (!enemy) continue;
+
+        enemy->MoveAlongPath();
+    }
+
+    checkCollision();
 /*
     //Push the model matrix to the shader and draw the triangle
     setModelMatrix(tempMatrix);
@@ -398,7 +491,7 @@ void RenderWindow::startNextFrame()
     mWindow->requestUpdate(); // render continuously, throttled by the presentation rate
 
     //mRotation += 1.0f; //set for next frame
-    mProjectionMatrix.rotate(0.2,0,1);
+    //mProjectionMatrix.rotate(0.2,0,1);
 }
 
 VkShaderModule RenderWindow::createShader(const QString &name)
@@ -528,3 +621,50 @@ void RenderWindow::releaseResources()
     }
 }
 
+std::vector<VisualObject*>* RenderWindow::GetMeshes()
+{
+    return &mMeshes;
+}
+
+std::vector<object*>* RenderWindow::GetObjects()
+{
+    return &mObjects;
+}
+
+void RenderWindow::AppendMesh(VisualObject* Mesh)
+{
+    mMeshes.push_back(Mesh);
+}
+
+void RenderWindow::AppendObject(object* obj)
+{
+    mObjects.push_back(obj);
+
+    AppendMesh(obj->mMesh);
+}
+
+void RenderWindow::AppendPickup(Pickup* pickup)
+{
+    mPickups.push_back(pickup);
+
+    AppendMesh(pickup->mMesh);
+
+    pickup->mMeshIndex = mMeshes.size() - 1;
+}
+
+void RenderWindow::GetPickup(Pickup* pickup, const int& pickupIndex)
+{
+    mPickupsGathered++;
+
+    qDebug() << mPickupsGathered << " pickups have been gathered!";
+
+    int index = pickup->mMeshIndex;
+
+    mPickups.erase(mPickups.begin() + pickupIndex);
+
+    delete pickup;
+
+    if (index < 0) return;
+
+    mMeshes.erase(mMeshes.begin() + index);
+}

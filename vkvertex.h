@@ -11,6 +11,12 @@ public:
 
     float x,y,z,r,g,b,u,v;
 
+    VKVertex operator+(VKVertex other);
+    VKVertex operator-(VKVertex other);
+    VKVertex operator*(float f);
+
+    float GetDistanceTo(VKVertex other);
+
     friend std::ostream& operator<< (std::ostream&, const VKVertex&);
 
     friend std::istream& operator>> (std::istream&, VKVertex&);

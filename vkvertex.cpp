@@ -14,6 +14,25 @@ VKVertex::VKVertex(float newX, float newY, float newZ, float newR, float newG, f
     v = newV;
 }
 
+VKVertex VKVertex::operator+(VKVertex other)
+{
+    return {x + other.x, y + other.y, z + other.z, r + other.r, g + other.g, b + other.b, u, v};
+}
+
+VKVertex VKVertex::operator-(VKVertex other)
+{
+    return {x - other.x, y - other.y, z - other.z, r - other.r, g - other.g, b - other.b, u, v};
+}
+
+VKVertex VKVertex::operator*(float f)
+{
+    return {x * f, y * f, z * f, r, g, b, u, v};
+}
+
+float VKVertex::GetDistanceTo(VKVertex other)
+{
+    return sqrt(pow(x - other.x, 2) + pow(y - other.y, 2) + pow(z - other.z, 2));
+}
 
 std::ostream& operator<< (std::ostream& os, const VKVertex& v) {
     os << std::fixed;

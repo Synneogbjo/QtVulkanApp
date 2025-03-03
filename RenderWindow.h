@@ -1,20 +1,26 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
 
-#include "vktriangle.h"
-#include "vktrianglesurface.h"
+#include "object.h"
+#include "pickup.h"
+
 #include <QVulkanWindow>
 
 class RenderWindow : public QVulkanWindowRenderer
 {
 private:
-    VkTriangle mTriangle;
-    VkTriangleSurface mSurface;
-    VisualObject mVisualObject;
-    std::vector<VisualObject*> mObjects;
+    friend class VulkanWindow;
 
+    std::vector<VisualObject*> mMeshes;
+    std::vector<object*> mObjects;
+    std::vector<Pickup*> mPickups;
+
+    uint mPickupsTotal = 0;
+    uint mPickupsGathered = 0;
 
     void createBuffer(VkDevice logicalDevice,const VkDeviceSize uniAlign,VisualObject* visualObject,VkBufferUsageFlags usage=VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+
+    void checkCollision();
 
 
 public:
@@ -41,6 +47,16 @@ public:
 
     //Get Vulkan info - just for fun
     void getVulkanHWInfo();
+
+    //Get and Set Meshes and Objects
+    std::vector<VisualObject*>* GetMeshes();
+    std::vector<object*>* GetObjects();
+
+    void AppendMesh(VisualObject* Mesh);
+    void AppendObject(object* obj);
+    void AppendPickup(Pickup* pickup);
+
+    void GetPickup(Pickup* pickup, const int& pickupIndex);
 
 protected:
 
