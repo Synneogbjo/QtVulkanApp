@@ -28,6 +28,8 @@ qt_add_executable(QtVulkanApp
     object.h object.cpp
     lerp.h lerp.cpp
     pickup.h pickup.cpp
+    meshes/enemy.txt
+    meshes/pickup.txt
 
 )
 

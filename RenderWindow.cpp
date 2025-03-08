@@ -156,19 +156,19 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
 
     AppendObject(new Player("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "player", .4f));
 
-    std::vector<VKVertex> pathVertices1 = {{0.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {5.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {5.f,0.f,3.f,0.f,0.f,0.f,0.f,0.f}};
+    std::vector<VKVertex> pathVertices1 = {{3.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {6.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {5.f,0.f,3.f,0.f,0.f,0.f,0.f,0.f}};
     std::vector<VKVertex> pathVertices2 = {{-5.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {-5.f,0.f,-5.f,0.f,0.f,0.f,0.f,0.f}};
 
-    AppendObject(new Enemy("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "enemy_1", .4f, pathVertices1, 0.005f));
-    AppendObject(new Enemy("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "enemy_2", .4f, pathVertices2, 0.005f));
+    AppendObject(new Enemy("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", "enemy_1", .4f, pathVertices1, 0.005f));
+    AppendObject(new Enemy("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", "enemy_2", .4f, pathVertices2, 0.005f));
 
-    std::vector<Pickup*> pickups = {new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "pickup_1", 1.f),
-                                    new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "pickup_2", 1.f),
-                                    new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt", "pickup_3", 1.f)};
+    std::vector<Pickup*> pickups = {new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt", "pickup_1", 1.f),
+                                    new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt", "pickup_2", 1.f),
+                                    new Pickup("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt", "pickup_3", 1.f)};
 
-    pickups.at(0)->mMesh->mMatrix.translate({4.f,0.f,4.f});
-    pickups.at(1)->mMesh->mMatrix.translate({0.f,0.f,4.f});
-    pickups.at(2)->mMesh->mMatrix.translate({-4.f,0.f,4.f});
+    pickups.at(0)->mMesh->mMatrix.translate({4.f,1.f,4.f});
+    pickups.at(1)->mMesh->mMatrix.translate({0.f,1.f,4.f});
+    pickups.at(2)->mMesh->mMatrix.translate({-4.f,1.f,4.f});
 
     AppendPickup(pickups.at(0));
     AppendPickup(pickups.at(1));
