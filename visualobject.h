@@ -1,28 +1,31 @@
 #ifndef VISUALOBJECT_H
 #define VISUALOBJECT_H
 
-
-#include <QVulkanWindow> 	// VkDeviceMemory, VkBuffer defined here
+#include <QVulkanWindow>
 #include <vector>
-#include "vkvertex.h"
-
+#include "vertex.h"
 
 class VisualObject
 {
 public:
-    std::vector<VKVertex> mVertices;
-    std::vector<VKVertex> getVertices() { return mVertices; }
+    std::vector<Vertex> mVertices;
+    std::vector<Vertex> getVertices() { return mVertices; }
     VisualObject();
+    void setName(std::string name);
+    std::string getName() const;
+
     //
     VkDeviceMemory mBufferMemory{ VK_NULL_HANDLE };
     VkBuffer mBuffer{ VK_NULL_HANDLE };
     VkPrimitiveTopology mTopology { VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST };
     //
     QMatrix4x4 mMatrix;
-    void move(float x, float y = 0.0f, float z = 0.0f);
+    void move(float x, float y=0.0f, float z=0.0f);
     void scale(float s);
-    void scale(float x, float y = 1.0f, float z = 1.0f);
     void rotate(float t, float x, float y, float z);
+protected:
+    std::string mName;
 };
 
-#endif
+#endif // VISUALOBJECT_H
+

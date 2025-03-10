@@ -1,9 +1,7 @@
 #ifndef VKTRIANGLE_H
 #define VKTRIANGLE_H
 
-#include <vector>
-#include "VisualObject.h"
-#include "Vertex.h"
+#include "visualobject.h"
 
 class VkTriangle : public VisualObject {
 public:
