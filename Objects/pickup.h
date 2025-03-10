@@ -6,8 +6,7 @@
 class Pickup : public object
 {
 public:
-    Pickup();
-    Pickup(const std::string& meshFileName, const std::string& name = "tbd", const float& collisionRadius = 0.f);
+    Pickup(const std::string& name = "tbd", Collider* collider = nullptr, const std::string& meshFileName = "");
 
     int mMeshIndex;
 };

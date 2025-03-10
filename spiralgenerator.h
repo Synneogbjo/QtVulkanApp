@@ -1,7 +1,7 @@
 #ifndef SPIRALGENERATOR_H
 #define SPIRALGENERATOR_H
 
-#include "visualobject.h"
+#include "objects/visualobject.h"
 
 class SpiralGenerator : public VisualObject
 {

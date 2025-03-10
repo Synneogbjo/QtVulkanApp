@@ -24,6 +24,8 @@ VkTriangleSurface::VkTriangleSurface() : VisualObject()
 
 VkTriangleSurface::VkTriangleSurface(const std::string& filename)
 {
+    if (filename == "") VkTriangleSurface();
+
     std::ifstream inn(filename);
 
     if (!inn.is_open())

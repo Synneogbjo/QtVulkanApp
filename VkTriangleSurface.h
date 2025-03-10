@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include "vkvertex.h"
-#include "visualobject.h"
+#include "objects/visualobject.h"
 
 class VkTriangleSurface : public VisualObject
 {

@@ -13,31 +13,49 @@ QVulkanWindowRenderer* VulkanWindow::createRenderer()
 
 void VulkanWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_D)
-    {
-        qDebug("I pressed the D button");
-        dynamic_cast<RenderWindow*>(mRenderWindow)->mMeshes.at(3)->move(-0.1f);
-    }
-    if(event->key() == Qt::Key_A)
-    {
-        qDebug("I pressed the A button");
+    if (event->key() == Qt::Key_W) mInput.W = true;
+    if(event->key() == Qt::Key_A) mInput.A = true;
+    if (event->key() == Qt::Key_S) mInput.S = true;
+    if (event->key() == Qt::Key_D) mInput.D = true;
 
-        dynamic_cast<RenderWindow*>(mRenderWindow)->mMeshes.at(3)->move(0.1f);
-    }
-    if (event->key() == Qt::Key_W)
-    {
-        qDebug("I pressed the W button");
+    if (event->key() == Qt::Key_Escape) mInput.ESCAPE = true;
 
-        dynamic_cast<RenderWindow*>(mRenderWindow)->mMeshes.at(3)->move(0.f,0.f,0.1f);
-    }
-    if (event->key() == Qt::Key_S)
-    {
-        qDebug("I pressed the S button");
+}
 
-        dynamic_cast<RenderWindow*>(mRenderWindow)->mMeshes.at(3)->move(0.f,0.f,-0.1f);
-    }
-    if (event->key() == Qt::Key_Escape)
+void VulkanWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_W) mInput.W = false;
+    if(event->key() == Qt::Key_A) mInput.A = false;
+    if (event->key() == Qt::Key_S) mInput.S = false;
+    if (event->key() == Qt::Key_D) mInput.D = false;
+
+    if (event->key() == Qt::Key_Escape) mInput.ESCAPE = false;
+}
+
+void VulkanWindow::SolveInput()
+{
+    auto rw = dynamic_cast<RenderWindow*>(mRenderWindow);
+
+    bool bRender = (rw) ? !rw->GetHasLost() : false;
+
+    if (mInput.W && bRender)
     {
-        QCoreApplication::quit();       //Shuts down the whole program
+        rw->mMeshes.at(3)->move(0.f,0.f,0.04f);
+    }
+    if (mInput.A && bRender)
+    {
+        rw->mMeshes.at(3)->move(0.04f);
+    }
+    if (mInput.S && bRender)
+    {
+        rw->mMeshes.at(3)->move(0.f,0.f,-0.04f);
+    }
+    if (mInput.D && bRender)
+    {
+        rw->mMeshes.at(3)->move(-0.04f);
+    }
+    if (mInput.ESCAPE)
+    {
+        QCoreApplication::quit();
     }
 }

@@ -1,7 +1,7 @@
 #ifndef APESADELGENERATOR_H
 #define APESADELGENERATOR_H
 
-#include "visualobject.h"
+#include "objects/visualobject.h"
 
 class ApeSadelGenerator : public VisualObject
 {

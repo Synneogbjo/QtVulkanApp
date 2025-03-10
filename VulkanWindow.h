@@ -2,6 +2,7 @@
 #define VULKANWINDOW_H
 
 #include <QVulkanWindow>
+#include "input.h"
 
 /*The QVulkanWindow subclass reimplements the factory function QVulkanWindow::createRenderer().
 This returns a new instance of the QVulkanWindowRenderer subclass.
@@ -19,6 +20,8 @@ public:
     QVulkanWindowRenderer* createRenderer() override;
     QVulkanWindowRenderer* getRenderWindow() const { return mRenderWindow; }
 
+    void SolveInput();
+
 signals:
     void frameQueued(int colorValue);
 
@@ -31,10 +34,12 @@ protected:
     //    void mousePressEvent(QMouseEvent *event) override{}
     //    void mouseMoveEvent(QMouseEvent *event) override{}
     void keyPressEvent(QKeyEvent *event) override;              //the only one we use now
-    //    void keyReleaseEvent(QKeyEvent *event) override{}
+    void keyReleaseEvent(QKeyEvent *event) override;
     //    void wheelEvent(QWheelEvent *event) override{}
 
     QVulkanWindowRenderer* mRenderWindow;
+
+    Input mInput;
 
 };
 #endif // VULKANWINDOW_H

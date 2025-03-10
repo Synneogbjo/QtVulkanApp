@@ -2,8 +2,8 @@
 #define ENEMY_H
 
 #include "object.h"
-#include "vkvertex.h"
-#include "lerp.h"
+#include "../vkvertex.h"
+#include "../lerp.h"
 #include <vector>
 
 class Enemy : public object
@@ -16,9 +16,8 @@ private:
     lerp* Lerper = new lerp();
 
 
-public:   
-    Enemy();
-    Enemy(const std::string meshFileName, const std::string& name = "tbd", const float& collisionRadius = 0.f, const std::vector<VKVertex>& pathVertices = {}, const float moveSpeed = 1.f);
+public:
+    Enemy(const std::string& name = "tbd", Collider* collider = nullptr, const std::string meshFileName = "", const std::vector<VKVertex>& pathVertices = {}, const float moveSpeed = 1.f);
 
     void MoveAlongPath();
 };

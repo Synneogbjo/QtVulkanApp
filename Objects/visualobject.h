@@ -3,7 +3,7 @@
 
 #include <QVulkanWindow>
 #include <vector>
-#include "vkvertex.h"
+#include "../vkvertex.h"
 
 class VisualObject
 {
@@ -11,6 +11,7 @@ public:
     std::vector<VKVertex> mVertices;
     std::vector<VKVertex> getVertices() { return mVertices; }
     VisualObject();
+
     void setName(std::string name);
     std::string getName() const;
 
@@ -23,6 +24,7 @@ public:
     void move(float x, float y=0.0f, float z=0.0f);
     void scale(float s);
     void rotate(float t, float x, float y, float z);
+
 protected:
     std::string mName;
 };

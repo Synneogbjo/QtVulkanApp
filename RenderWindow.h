@@ -1,8 +1,8 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
 
-#include "object.h"
-#include "pickup.h"
+#include "Objects/object.h"
+#include "Objects/pickup.h"
 
 #include <QVulkanWindow>
 
@@ -17,6 +17,10 @@ private:
 
     uint mPickupsTotal = 0;
     uint mPickupsGathered = 0;
+
+    bool bLost = false;
+
+    class VulkanWindow* mVulkanWindow{ nullptr };
 
     void createBuffer(VkDevice logicalDevice,const VkDeviceSize uniAlign,VisualObject* visualObject,VkBufferUsageFlags usage=VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
@@ -57,6 +61,8 @@ public:
     void AppendPickup(Pickup* pickup);
 
     void GetPickup(Pickup* pickup, const int& pickupIndex);
+
+    bool GetHasLost();
 
 protected:
 

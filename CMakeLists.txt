@@ -11,7 +11,7 @@ qt_add_executable(QtVulkanApp
     main.cpp
 
     VulkanWindow.h VulkanWindow.cpp
-    visualobject.h visualobject.cpp
+    objects/visualobject.h objects/visualobject.cpp
     vktriangle.h vktriangle.cpp
     vkvertex.cpp vkvertex.h
     vktrianglesurface.h vktrianglesurface.cpp
@@ -20,16 +20,19 @@ qt_add_executable(QtVulkanApp
     meshes/house.txt
     meshes/door1.txt
     meshes/door1_open.txt
-    player.h player.cpp
-    enemy.h enemy.cpp
-    pickup.h pickup.cpp
+    objects/object.h objects/object.cpp
+    objects/player.h objects/player.cpp
+    objects/enemy.h objects/enemy.cpp
+    objects/pickup.h objects/pickup.cpp
     meshes/player.txt
     meshes/floor.txt
-    object.h object.cpp
     lerp.h lerp.cpp
-    pickup.h pickup.cpp
     meshes/enemy.txt
     meshes/pickup.txt
+    input.h
+    collision/collider.h collision/collider.cpp
+    collision/aabbcollider.h collision/aabbcollider.cpp
+    collision/spherecollider.h collision/spherecollider.cpp
 
 )
 
