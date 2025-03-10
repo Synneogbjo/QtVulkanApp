@@ -2,7 +2,7 @@
 #define VKTRIANGLESURFACE_H
 #include <vector>
 #include <string>
-#include "Vertex.h"
+#include "vkvertex.h"
 #include "visualobject.h"
 
 class VkTriangleSurface : public VisualObject

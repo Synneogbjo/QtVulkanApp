@@ -3,13 +3,13 @@
 
 #include <QVulkanWindow>
 #include <vector>
-#include "vertex.h"
+#include "vkvertex.h"
 
 class VisualObject
 {
 public:
-    std::vector<Vertex> mVertices;
-    std::vector<Vertex> getVertices() { return mVertices; }
+    std::vector<VKVertex> mVertices;
+    std::vector<VKVertex> getVertices() { return mVertices; }
     VisualObject();
     void setName(std::string name);
     std::string getName() const;
