@@ -10,5 +10,7 @@ object::object(const std::string& name, Collider* collider, const std::string& m
 
 void object::UpdateColliderLocation()
 {
-    mCollider->mLocation = QVector3D(mMatrix(0,3),mMatrix(1,3),mMatrix(2,3));
+    mCollider->SetLocation(QVector3D(mMatrix(0,3),mMatrix(1,3),mMatrix(2,3)));
+
+    qDebug() << mName << " moved to " << mCollider->GetLocation();
 }

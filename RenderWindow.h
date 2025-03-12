@@ -60,7 +60,7 @@ public:
     void AppendObject(object* obj);
     void AppendPickup(Pickup* pickup);
 
-    void GetPickup(Pickup* pickup, const int& pickupIndex);
+    void GatherPickup(Pickup* pickup, const int& pickupIndex);
 
     bool GetHasLost();
 

@@ -24,5 +24,7 @@ void Enemy::MoveAlongPath()
     auto oldLocation = mMatrix.column(3);
     VKVertex newLocation = Lerper->Lerp(mPathLocation - startIndex, point1, point2);
 
+    auto val = (startIndex + 1) >= pathLength? 0 : startIndex + 1;
+
     mMatrix.translate(newLocation.x - oldLocation.x(), newLocation.y - oldLocation.y(), newLocation.z - oldLocation.z());
 }

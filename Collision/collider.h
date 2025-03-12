@@ -5,16 +5,21 @@
 
 class Collider
 {
-public:
-    Collider(QVector3D location);
+private:
+    QVector3D mLocationLocal;
+     QVector3D mLocation;
 
-    QVector3D mLocation;
+public:
+    Collider(QVector3D locationLocal);
 
     virtual bool checkCollision(Collider& other) = 0;
     virtual bool checkCollisionWithAABB(class AABBCollider& aabb) = 0;
     virtual bool checkCollisionWithSphere(class SphereCollider& sphere) = 0;
 
-    void SetLocation(QVector3D location);
+    void SetLocationLocal(QVector3D locationLocal);
+    QVector3D GetLocationLocal();
+
+    void SetLocation(QVector3D locationLocal);
     QVector3D GetLocation();
 };
 

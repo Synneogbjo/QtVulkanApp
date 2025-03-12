@@ -22,9 +22,9 @@ bool SphereCollider::checkCollisionWithAABB(AABBCollider& aabb)
 
 bool SphereCollider::checkCollisionWithSphere(SphereCollider& sphere)
 {
-    float distance = sqrt(  pow((mCenter.x() + mLocation.x()) - (sphere.mCenter.x() + sphere.mLocation.x()),2) +
-                            pow((mCenter.y() + mLocation.y()) - (sphere.mCenter.y() + sphere.mLocation.y()),2) +
-                            pow((mCenter.z() + mLocation.z()) - (sphere.mCenter.z() + sphere.mLocation.z()),2));
+    float distance = sqrt(pow((mCenter.x() + GetLocation().x()) - (sphere.mCenter.x() + sphere.GetLocation().x()),2) +
+                          pow((mCenter.y() + GetLocation().y()) - (sphere.mCenter.y() + sphere.GetLocation().y()),2) +
+                          pow((mCenter.z() + GetLocation().z()) - (sphere.mCenter.z() + sphere.GetLocation().z()),2));
 
     return (distance <= mRadius + sphere.mRadius);
 }

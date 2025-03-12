@@ -2,6 +2,7 @@
 #include "Objects/enemy.h"
 
 #include "Collision/spherecollider.h"
+#include "Collision/aabbcollider.h"
 
 #include "VulkanWindow.h"
 #include "RenderWindow.h"
@@ -91,8 +92,24 @@ void RenderWindow::checkCollision()
             if (mObjects.at(i)->mCollider->checkCollision(*mObjects.at(j)->mCollider))
             {
                 qDebug() << i << " and " << j << " are colliding. "
-                         << mObjects.at(i)->mCollider->mLocation.x() << "|" << mObjects.at(i)->mCollider->mLocation.y() << "|" << mObjects.at(i)->mCollider->mLocation.z() << " - "
-                         << mObjects.at(j)->mCollider->mLocation.x() << "|" << mObjects.at(j)->mCollider->mLocation.y() << "|" << mObjects.at(j)->mCollider->mLocation.z();
+                         << mObjects.at(i)->mCollider->GetLocation().x() << "|" << mObjects.at(i)->mCollider->GetLocation().y() << "|" << mObjects.at(i)->mCollider->GetLocation().z() << " - "
+                         << mObjects.at(j)->mCollider->GetLocation().x() << "|" << mObjects.at(j)->mCollider->GetLocation().y() << "|" << mObjects.at(j)->mCollider->GetLocation().z();
+            }
+        }
+
+        auto player = dynamic_cast<Player*>(mObjects.at(i));
+
+        if (!player) continue;
+
+        for (int p = 0; p < mPickups.size(); p++)
+        {
+            if (!dynamic_cast<Pickup*>(mPickups.at(p))) continue;
+
+            if (player->mCollider->checkCollision(*mPickups.at(p)->mCollider))
+            {
+                //TODO: Make player collect pickup
+
+                GatherPickup(mPickups.at(p), mPickups.at(p)->mMeshIndex);
             }
         }
     }
@@ -110,7 +127,7 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
     //.push_back(new SpiralGenerator(0,20,100));
 
     AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/floor.txt"));
-    AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
+    //AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
     AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt"));
 
     AppendObject(new Player("player", new SphereCollider(QVector3D(0.f,0.f,0.f), QVector3D(0.f,0.f,0.f),0.35f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt"));
@@ -118,12 +135,14 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
     std::vector<VKVertex> pathVertices1 = {{3.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {6.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {5.f,0.f,3.f,0.f,0.f,0.f,0.f,0.f}};
     std::vector<VKVertex> pathVertices2 = {{-5.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {-5.f,0.f,-5.f,0.f,0.f,0.f,0.f,0.f}};
 
-    AppendObject(new Enemy("enemy_1", new SphereCollider(QVector3D(3.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.35f), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", pathVertices1, 0.005f));
-    AppendObject(new Enemy("enemy_2", new SphereCollider(QVector3D(-5.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.35f), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", pathVertices2, 0.005f));
+    AppendObject(new Enemy("enemy_1", new SphereCollider(QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.35f), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", pathVertices1, 0.005f));
+    AppendObject(new Enemy("enemy_2", new SphereCollider(QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.35f), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", pathVertices2, 0.005f));
 
-    std::vector<Pickup*> pickups = {new Pickup("pickup_1", new SphereCollider(QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.8f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
-                                    new Pickup("pickup_2", new SphereCollider(QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.8f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
-                                    new Pickup("pickup_3", new SphereCollider(QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.8f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt")};
+    AppendObject(new object("house", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-2.f,0.f,1.5f), QVector3D(2.f,4.f,6.5f)), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
+
+    std::vector<Pickup*> pickups = {new Pickup("pickup_1", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
+                                    new Pickup("pickup_2", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
+                                    new Pickup("pickup_3", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt")};
 
     pickups.at(0)->mMatrix.translate({4.f,1.f,4.f});
     pickups.at(1)->mMatrix.translate({0.f,1.f,4.f});
@@ -424,11 +443,18 @@ void RenderWindow::startNextFrame()
 
     for (auto obj : mObjects)
     {
+        obj->UpdateColliderLocation();
+
         Enemy* enemy = static_cast<Enemy*>(obj);
 
         if (!enemy) continue;
 
         enemy->MoveAlongPath();
+    }
+
+    for (auto pick : mPickups)
+    {
+        pick->UpdateColliderLocation();
     }
 
     checkCollision();
@@ -455,11 +481,6 @@ void RenderWindow::startNextFrame()
     //mProjectionMatrix.rotate(0.2,0,1);
 
     if (mVulkanWindow) mVulkanWindow->SolveInput();
-
-    for (auto obj : mObjects)
-    {
-        obj->UpdateColliderLocation();
-    }
 }
 
 VkShaderModule RenderWindow::createShader(const QString &name)
@@ -620,7 +641,7 @@ void RenderWindow::AppendPickup(Pickup* pickup)
     pickup->mMeshIndex = mMeshes.size() - 1;
 }
 
-void RenderWindow::GetPickup(Pickup* pickup, const int& pickupIndex)
+void RenderWindow::GatherPickup(Pickup* pickup, const int& pickupIndex)
 {
     mPickupsGathered++;
 
@@ -628,13 +649,13 @@ void RenderWindow::GetPickup(Pickup* pickup, const int& pickupIndex)
 
     int index = pickup->mMeshIndex;
 
-    mPickups.erase(mPickups.begin() + pickupIndex);
+    //mPickups.erase(mPickups.begin() + pickupIndex);
 
-    delete pickup;
+    //delete pickup;
 
     if (index < 0) return;
 
-    mMeshes.erase(mMeshes.begin() + index);
+    mMeshes.at(index)->move(0.f,-100.f,0.f);
 }
 
 bool RenderWindow::GetHasLost()

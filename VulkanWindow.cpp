@@ -40,19 +40,19 @@ void VulkanWindow::SolveInput()
 
     if (mInput.W && bRender)
     {
-        rw->mMeshes.at(3)->move(0.f,0.f,0.04f);
+        rw->mMeshes.at(2)->move(0.f,0.f,0.04f);
     }
     if (mInput.A && bRender)
     {
-        rw->mMeshes.at(3)->move(0.04f);
+        rw->mMeshes.at(2)->move(0.04f);
     }
     if (mInput.S && bRender)
     {
-        rw->mMeshes.at(3)->move(0.f,0.f,-0.04f);
+        rw->mMeshes.at(2)->move(0.f,0.f,-0.04f);
     }
     if (mInput.D && bRender)
     {
-        rw->mMeshes.at(3)->move(-0.04f);
+        rw->mMeshes.at(2)->move(-0.04f);
     }
     if (mInput.ESCAPE)
     {

@@ -13,6 +13,8 @@ private:
 public:
     object(const std::string& name = "tbd", Collider* collider = nullptr, const std::string& meshFileName = "");
 
+    virtual ~object() = default;
+
     Collider* mCollider;
 
     void UpdateColliderLocation();
