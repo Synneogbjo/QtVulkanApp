@@ -15,8 +15,21 @@ bool Teleporter::EnteredTrigger(object* other)
         if (auto player = dynamic_cast<Player*>(other))
         {
             player->mMatrix.translate(mTeleportTargetPosition - other->GetLocation());
-            //TODO: Swap active camera when player is teleported into the house
-            //player->camera
+
+            if (player->cameraRef)
+            {
+                QMatrix4x4 cam = *(player->cameraRef);
+                QVector3D cameraLoc = { cam(0,3), cam(1,3), cam(2,3)};
+
+                qDebug() << cameraLoc;
+
+                //player->cameraRef->translate((mTeleportTargetPosition + QVector3D(0.f,1.f,-35.f)) - cameraLoc);
+                player->cameraRef->translate(-mTeleportTargetPosition.x(), mTeleportTargetPosition.y(), mTeleportTargetPosition.z());
+
+                cam = *(player->cameraRef);
+
+                qDebug() << cam(0,3) << cam(1,3) << cam(2,3);
+            }
 
             return true;
         }

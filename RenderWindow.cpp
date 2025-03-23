@@ -175,7 +175,10 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
 
     AppendObject(new object("house", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-2.f,0.f,1.5f), QVector3D(2.f,4.f,6.5f), false), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
     AppendObject(new Door("door", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f, 2.f, 0.f)), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f,2.f,3.f))));
-    AppendObject(new Teleporter("houseTeleportInto", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.f)),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f),QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.5f)), QVector3D(100.f,0.f,0.f)));
+    AppendObject(new Teleporter("houseTeleportInto", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.f)),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f),QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.5f)), QVector3D(30.f,0.f,0.f)));
+    AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house_inside.txt"));
+    mMeshes.at(mMeshes.size() - 1)->mMatrix.translate(30.f,0.f,0.f);
+    qDebug() << "mesh at " << mMeshes.at(mMeshes.size() - 1)->mMatrix;
 
     std::vector<Pickup*> pickups = {new Pickup("pickup_1", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
                                     new Pickup("pickup_2", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
@@ -417,6 +420,8 @@ void RenderWindow::initSwapChainResources()
 
     mProjectionMatrix.rotate(15,1,0,0);
     mProjectionMatrix.rotate(165,0,1,0);
+
+    mPlayer->cameraRef = &mProjectionMatrix;
 }
 
 void RenderWindow::startNextFrame()

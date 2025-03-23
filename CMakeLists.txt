@@ -29,6 +29,7 @@ qt_add_executable(QtVulkanApp
     lerp.h lerp.cpp
     meshes/enemy.txt
     meshes/pickup.txt
+    meshes/house_inside.txt
     input.h
     collision/collider.h collision/collider.cpp
     collision/aabbcollider.h collision/aabbcollider.cpp
