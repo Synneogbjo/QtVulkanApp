@@ -33,6 +33,9 @@ qt_add_executable(QtVulkanApp
     collision/collider.h collision/collider.cpp
     collision/aabbcollider.h collision/aabbcollider.cpp
     collision/spherecollider.h collision/spherecollider.cpp
+    objects/triggerobjects/door.h objects/triggerobjects/door.cpp
+    objects/triggerobjects/triggerobject.h objects/triggerobjects/triggerobject.cpp
+    Objects/TriggerObjects/teleporter.h Objects/TriggerObjects/teleporter.cpp
 
 )
 

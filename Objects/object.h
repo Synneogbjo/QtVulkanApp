@@ -2,8 +2,7 @@
 #define OBJECT_H
 
 #include "../vktrianglesurface.h"
-
-class Collider;
+#include "../Collision/collider.h"
 
 class object : public VkTriangleSurface
 {
@@ -15,9 +14,11 @@ public:
 
     virtual ~object() = default;
 
-    Collider* mCollider;
+    Collider* mCollider { nullptr };
 
     void UpdateColliderLocation();
+    QVector3D GetLocation();
+
 };
 
 #endif // OBJECT_H

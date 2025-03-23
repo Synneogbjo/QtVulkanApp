@@ -7,10 +7,13 @@ class Collider
 {
 private:
     QVector3D mLocationLocal;
-     QVector3D mLocation;
+    QVector3D mLocation;
+    bool bIsTrigger { true };
 
 public:
-    Collider(QVector3D locationLocal);
+    Collider(QVector3D locationLocal, bool bTrigger = true);
+
+    bool bIsEnabled { true };
 
     virtual bool checkCollision(Collider& other) = 0;
     virtual bool checkCollisionWithAABB(class AABBCollider& aabb) = 0;
@@ -21,6 +24,9 @@ public:
 
     void SetLocation(QVector3D locationLocal);
     QVector3D GetLocation();
+
+    void SetIsTrigger(bool bTrigger);
+    bool GetIsTrigger();
 };
 
 #endif // COLLIDER_H

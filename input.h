@@ -10,4 +10,5 @@ struct Input
     bool S = false;
     bool D = false;
     bool ESCAPE = false;
+    bool R = false;
 };

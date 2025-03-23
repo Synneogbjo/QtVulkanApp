@@ -12,7 +12,7 @@ public:
     QVector3D mMin;
     QVector3D mMax;
 
-    AABBCollider(QVector3D location, QVector3D min, QVector3D max);
+    AABBCollider(QVector3D location, QVector3D min, QVector3D max, bool bTrigger = true);
 
     virtual bool checkCollision(Collider& other) override;
     virtual bool checkCollisionWithAABB(class AABBCollider& other) override;

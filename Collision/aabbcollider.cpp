@@ -2,7 +2,7 @@
 #include "spherecollider.h"
 
 AABBCollider::AABBCollider() : Collider({0.f,0.f,0.f}) {}
-AABBCollider::AABBCollider(QVector3D location, QVector3D min, QVector3D max) : Collider(location)
+AABBCollider::AABBCollider(QVector3D location, QVector3D min, QVector3D max, bool bTrigger) : Collider(location, bTrigger)
 {
     // Makes sure to always use the smallest values for mMin and the largest for mMax
 

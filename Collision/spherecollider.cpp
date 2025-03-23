@@ -4,7 +4,7 @@
 SphereCollider::SphereCollider() : Collider({0.f,0.f,0.f}) {}
 
 
-SphereCollider::SphereCollider(QVector3D location, QVector3D center, float radius) : Collider(location)
+SphereCollider::SphereCollider(QVector3D location, QVector3D center, float radius, bool bTrigger) : Collider(location, bTrigger)
 {
     mCenter = center;
     mRadius = radius;

@@ -2,6 +2,8 @@
 #include "RenderWindow.h"
 #include <QKeyEvent>
 
+#include "Objects/TriggerObjects/door.h"
+
 VulkanWindow::VulkanWindow()
 {  }
 
@@ -20,6 +22,7 @@ void VulkanWindow::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Escape) mInput.ESCAPE = true;
 
+    if (event->key() == Qt::Key_R && !event->isAutoRepeat()) mInput.R = true;
 }
 
 void VulkanWindow::keyReleaseEvent(QKeyEvent *event)
@@ -30,6 +33,8 @@ void VulkanWindow::keyReleaseEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_D) mInput.D = false;
 
     if (event->key() == Qt::Key_Escape) mInput.ESCAPE = false;
+
+    if (event->key() == Qt::Key_R) mInput.R = false;
 }
 
 void VulkanWindow::SolveInput()
@@ -40,22 +45,28 @@ void VulkanWindow::SolveInput()
 
     if (mInput.W && bRender)
     {
-        rw->mMeshes.at(2)->move(0.f,0.f,0.04f);
+       rw->MovePlayer(0.f,0.f,0.04f);
     }
     if (mInput.A && bRender)
     {
-        rw->mMeshes.at(2)->move(0.04f);
+        rw->MovePlayer(0.04f);
     }
     if (mInput.S && bRender)
     {
-        rw->mMeshes.at(2)->move(0.f,0.f,-0.04f);
+        rw->MovePlayer(0.f,0.f,-0.04f);
     }
     if (mInput.D && bRender)
     {
-        rw->mMeshes.at(2)->move(-0.04f);
+        rw->MovePlayer(-0.04f);
     }
     if (mInput.ESCAPE)
     {
         QCoreApplication::quit();
+    }
+    if (mInput.R)
+    {
+        dynamic_cast<Door*>(rw->mObjects.at(4))->ToggleDoor({0.f,0.f,0.f});
+
+        mInput.R = false;
     }
 }

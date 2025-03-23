@@ -12,7 +12,7 @@ public:
     QVector3D mCenter;
     float mRadius;
 
-    SphereCollider(QVector3D location, QVector3D center, float radius);
+    SphereCollider(QVector3D location, QVector3D center, float radius, bool bTrigger = true);
 
     virtual bool checkCollision(Collider& other) override;
     virtual bool checkCollisionWithAABB(class AABBCollider& other) override;

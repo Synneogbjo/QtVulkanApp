@@ -3,6 +3,7 @@
 
 #include "Objects/object.h"
 #include "Objects/pickup.h"
+#include "Objects/player.h"
 
 #include <QVulkanWindow>
 
@@ -10,6 +11,8 @@ class RenderWindow : public QVulkanWindowRenderer
 {
 private:
     friend class VulkanWindow;
+
+    Player* mPlayer{ nullptr };
 
     std::vector<VisualObject*> mMeshes;
     std::vector<object*> mObjects;
@@ -63,6 +66,11 @@ public:
     void GatherPickup(Pickup* pickup, const int& pickupIndex);
 
     bool GetHasLost();
+
+    void SetPlayer(Player* player);
+    Player* GetPlayer();
+
+    void MovePlayer(const float x, const float y = 0.f, const float z = 0.f);
 
 protected:
 

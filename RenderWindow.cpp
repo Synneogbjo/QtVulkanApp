@@ -1,5 +1,7 @@
 #include "Objects/player.h"
 #include "Objects/enemy.h"
+#include "Objects/TriggerObjects/door.h"
+#include "Objects/TriggerObjects/teleporter.h"
 
 #include "Collision/spherecollider.h"
 #include "Collision/aabbcollider.h"
@@ -87,13 +89,38 @@ void RenderWindow::checkCollision()
 {
     for (int i = 0; i < mObjects.size(); i++)
     {
+        if (!mObjects.at(i)->mCollider->bIsEnabled) continue;
+
         for (int j = i + 1; j < mObjects.size(); j++)
         {
+            if (!mObjects.at(j)->mCollider->bIsEnabled) continue;
+
+            auto triggerObj = dynamic_cast<TriggerObject*>(mObjects.at(j));
+
+            if (triggerObj && dynamic_cast<Player*>(mObjects.at(i)))
+            {
+                if (mObjects.at(i)->mCollider->checkCollision(*triggerObj->mTriggerCollider))
+                {
+                triggerObj->InTrigger(mObjects.at(i));
+
+                /*qDebug() << i << " and trigger " << j << " are colliding. "
+                         << mObjects.at(i)->mCollider->GetLocation().x() << "|" << mObjects.at(i)->mCollider->GetLocation().y() << "|" << mObjects.at(i)->mCollider->GetLocation().z() << " - "
+                         << mObjects.at(j)->mCollider->GetLocation().x() << "|" << mObjects.at(j)->mCollider->GetLocation().y() << "|" << mObjects.at(j)->mCollider->GetLocation().z();*/
+                }
+            }
+
             if (mObjects.at(i)->mCollider->checkCollision(*mObjects.at(j)->mCollider))
             {
-                qDebug() << i << " and " << j << " are colliding. "
+                qDebug() << "Collision";
+
+                if (dynamic_cast<Enemy*>(mObjects.at(j)))
+                {
+                    bLost = true;
+                    qDebug() << "You Lost!!!";
+                }
+                /*qDebug() << i << " and " << j << " are colliding. "
                          << mObjects.at(i)->mCollider->GetLocation().x() << "|" << mObjects.at(i)->mCollider->GetLocation().y() << "|" << mObjects.at(i)->mCollider->GetLocation().z() << " - "
-                         << mObjects.at(j)->mCollider->GetLocation().x() << "|" << mObjects.at(j)->mCollider->GetLocation().y() << "|" << mObjects.at(j)->mCollider->GetLocation().z();
+                         << mObjects.at(j)->mCollider->GetLocation().x() << "|" << mObjects.at(j)->mCollider->GetLocation().y() << "|" << mObjects.at(j)->mCollider->GetLocation().z();*/
             }
         }
 
@@ -101,9 +128,13 @@ void RenderWindow::checkCollision()
 
         if (!player) continue;
 
+        if (!player->mCollider->bIsEnabled) return;
+
         for (int p = 0; p < mPickups.size(); p++)
         {
             if (!dynamic_cast<Pickup*>(mPickups.at(p))) continue;
+
+            if (!mPickups.at(p)->mCollider->bIsEnabled) continue;
 
             if (player->mCollider->checkCollision(*mPickups.at(p)->mCollider))
             {
@@ -128,9 +159,13 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
 
     AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/floor.txt"));
     //AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
-    AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt"));
+    //AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt"));
 
     AppendObject(new Player("player", new SphereCollider(QVector3D(0.f,0.f,0.f), QVector3D(0.f,0.f,0.f),0.35f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/player.txt"));
+
+    mObjects.at(0)->mMatrix.translate(0.f,0.f,-3.f);
+
+    SetPlayer(static_cast<Player*>(mObjects.back()));
 
     std::vector<VKVertex> pathVertices1 = {{3.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {6.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {5.f,0.f,3.f,0.f,0.f,0.f,0.f,0.f}};
     std::vector<VKVertex> pathVertices2 = {{-5.f,0.f,0.f,0.f,0.f,0.f,0.f,0.f}, {-5.f,0.f,-5.f,0.f,0.f,0.f,0.f,0.f}};
@@ -138,7 +173,9 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
     AppendObject(new Enemy("enemy_1", new SphereCollider(QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.35f), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", pathVertices1, 0.005f));
     AppendObject(new Enemy("enemy_2", new SphereCollider(QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f),0.35f), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/enemy.txt", pathVertices2, 0.005f));
 
-    AppendObject(new object("house", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-2.f,0.f,1.5f), QVector3D(2.f,4.f,6.5f)), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
+    AppendObject(new object("house", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-2.f,0.f,1.5f), QVector3D(2.f,4.f,6.5f), false), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
+    AppendObject(new Door("door", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f, 2.f, 0.f)), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f,2.f,3.f))));
+    AppendObject(new Teleporter("houseTeleportInto", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.f)),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f),QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.5f)), QVector3D(100.f,0.f,0.f)));
 
     std::vector<Pickup*> pickups = {new Pickup("pickup_1", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
                                     new Pickup("pickup_2", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
@@ -378,8 +415,8 @@ void RenderWindow::initSwapChainResources()
     //Flip projection because of Vulkan's -Y axis
     mProjectionMatrix.scale(1.0f, -1.0f, 1.0);
 
-    mProjectionMatrix.rotate(15,1,0);
-    mProjectionMatrix.rotate(165,0,1);
+    mProjectionMatrix.rotate(15,1,0,0);
+    mProjectionMatrix.rotate(165,0,1,0);
 }
 
 void RenderWindow::startNextFrame()
@@ -445,11 +482,12 @@ void RenderWindow::startNextFrame()
     {
         obj->UpdateColliderLocation();
 
-        Enemy* enemy = static_cast<Enemy*>(obj);
+        Enemy* enemy = dynamic_cast<Enemy*>(obj);
 
         if (!enemy) continue;
 
         enemy->MoveAlongPath();
+        enemy->UpdateColliderLocation();
     }
 
     for (auto pick : mPickups)
@@ -480,7 +518,10 @@ void RenderWindow::startNextFrame()
     //mRotation += 1.0f; //set for next frame
     //mProjectionMatrix.rotate(0.2,0,1);
 
-    if (mVulkanWindow) mVulkanWindow->SolveInput();
+    if (mVulkanWindow)
+    {
+        mVulkanWindow->SolveInput();
+    }
 }
 
 VkShaderModule RenderWindow::createShader(const QString &name)
@@ -661,4 +702,46 @@ void RenderWindow::GatherPickup(Pickup* pickup, const int& pickupIndex)
 bool RenderWindow::GetHasLost()
 {
     return bLost;
+}
+
+void RenderWindow::SetPlayer(Player* player)
+{
+    mPlayer = player;
+}
+
+Player* RenderWindow::GetPlayer()
+{
+    return mPlayer;
+}
+
+void RenderWindow::MovePlayer(const float x, const float y, const float z)
+{
+    Player* p = GetPlayer();
+
+    if (!p) return;
+
+    QVector3D location = p->GetLocation();
+    QVector3D targetLocation = location + QVector3D(x,y,z);
+
+    bool bWillCollide = false;
+
+    p->mCollider->SetLocation(targetLocation);
+
+    for (int i = 0; i < mObjects.size(); i++)
+    {
+        if (mObjects.at(i) == p) continue;
+
+        if (p->mCollider->checkCollision(*mObjects.at(i)->mCollider))
+        {
+            if (mObjects.at(i)->mCollider->GetIsTrigger()) continue;
+
+            bWillCollide = true;
+        }
+    }
+
+    p->mCollider->SetLocation(location);
+
+    if (bWillCollide) return;
+
+    p->move(x,y,z);
 }
