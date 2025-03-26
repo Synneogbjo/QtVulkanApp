@@ -10,6 +10,8 @@ public:
 
     Collider* mTriggerCollider { nullptr };
 
+    virtual void UpdateColliderLocation() override;
+
     virtual bool EnteredTrigger(object* other) = 0;
     virtual bool InTrigger(object* other) = 0;
     virtual bool LeftTrigger(object* other) = 0;

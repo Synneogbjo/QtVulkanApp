@@ -1,6 +1,8 @@
 #include "aabbcollider.h"
 #include "spherecollider.h"
 
+#include "qdebug.h"
+
 AABBCollider::AABBCollider() : Collider({0.f,0.f,0.f}) {}
 AABBCollider::AABBCollider(QVector3D location, QVector3D min, QVector3D max, bool bTrigger) : Collider(location, bTrigger)
 {
@@ -20,7 +22,7 @@ bool AABBCollider::checkCollision(Collider& other)
 }
 
 bool AABBCollider::checkCollisionWithAABB(AABBCollider& aabb)
-{
+{   
     return  (mMin.x() + GetLocation().x()) <= (aabb.mMax.x() + aabb.GetLocation().x()) && (mMax.x() + GetLocation().x()) >= (aabb.mMin.x() + aabb.GetLocation().x()) &&
             (mMin.y() + GetLocation().y()) <= (aabb.mMax.y() + aabb.GetLocation().y()) && (mMax.x() + GetLocation().y()) >= (aabb.mMin.y() + aabb.GetLocation().y()) &&
             (mMin.z() + GetLocation().z()) <= (aabb.mMax.z() + aabb.GetLocation().z()) && (mMax.x() + GetLocation().z()) >= (aabb.mMin.z() + aabb.GetLocation().z());

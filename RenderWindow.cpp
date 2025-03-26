@@ -111,8 +111,6 @@ void RenderWindow::checkCollision()
 
             if (mObjects.at(i)->mCollider->checkCollision(*mObjects.at(j)->mCollider))
             {
-                qDebug() << "Collision";
-
                 if (dynamic_cast<Enemy*>(mObjects.at(j)))
                 {
                     bLost = true;
@@ -138,8 +136,6 @@ void RenderWindow::checkCollision()
 
             if (player->mCollider->checkCollision(*mPickups.at(p)->mCollider))
             {
-                //TODO: Make player collect pickup
-
                 GatherPickup(mPickups.at(p), mPickups.at(p)->mMeshIndex);
             }
         }
@@ -175,22 +171,37 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
 
     AppendObject(new object("house", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-2.f,0.f,1.5f), QVector3D(2.f,4.f,6.5f), false), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
     AppendObject(new Door("door", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f, 2.f, 0.f)), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f,2.f,3.f))));
-    AppendObject(new Teleporter("houseTeleportInto", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.f)),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f),QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.5f)), QVector3D(30.f,0.f,0.f)));
+    AppendObject(new Teleporter("houseTeleportInto", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f)),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f),QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.5f)), QVector3D(30.f,0.f,0.f)));
     AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house_inside.txt"));
     mMeshes.at(mMeshes.size() - 1)->mMatrix.translate(30.f,0.f,0.f);
     qDebug() << "mesh at " << mMeshes.at(mMeshes.size() - 1)->mMatrix;
 
     std::vector<Pickup*> pickups = {new Pickup("pickup_1", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
                                     new Pickup("pickup_2", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
-                                    new Pickup("pickup_3", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt")};
+                                    new Pickup("pickup_3", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
+                                    new Pickup("pickup_4", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
+                                    new Pickup("pickup_5", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
+                                    new Pickup("pickup_6", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
+                                    new Pickup("pickup_7", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt"),
+                                    new Pickup("pickup_8", new SphereCollider(QVector3D(0.f,-1.f,0.f),QVector3D(0.f,0.f,0.f),0.4f),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/pickup.txt")};
 
     pickups.at(0)->mMatrix.translate({4.f,1.f,4.f});
-    pickups.at(1)->mMatrix.translate({0.f,1.f,4.f});
+    pickups.at(1)->mMatrix.translate({0.f,1.f,-6.f});
     pickups.at(2)->mMatrix.translate({-4.f,1.f,4.f});
+    pickups.at(3)->mMatrix.translate({4.f,1.f,-6.f});
+    pickups.at(4)->mMatrix.translate({-4.f,1.f,-6.f});
+    pickups.at(5)->mMatrix.translate({8.f,1.f,8.f});
+    pickups.at(6)->mMatrix.translate({30.f,1.f,4.f});
+    pickups.at(7)->mMatrix.translate({5.f,1.f,0.f});
 
     AppendPickup(pickups.at(0));
     AppendPickup(pickups.at(1));
     AppendPickup(pickups.at(2));
+    AppendPickup(pickups.at(3));
+    AppendPickup(pickups.at(4));
+    AppendPickup(pickups.at(5));
+    AppendPickup(pickups.at(6));
+    AppendPickup(pickups.at(7));
 
     //.push_back((new ApeSadelGenerator(-1,1,0.2)));
 
@@ -691,7 +702,9 @@ void RenderWindow::GatherPickup(Pickup* pickup, const int& pickupIndex)
 {
     mPickupsGathered++;
 
-    qDebug() << mPickupsGathered << " pickups have been gathered!";
+    qDebug() << mPickupsGathered << " of " << mPickups.size() << " pickups have been gathered!";
+
+    if (mPickupsGathered >= mPickups.size()) qDebug() << "Congratulatuons! You've picked up all the pickups!";
 
     int index = pickup->mMeshIndex;
 

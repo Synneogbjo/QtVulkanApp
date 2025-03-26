@@ -16,7 +16,7 @@ public:
 
     Collider* mCollider { nullptr };
 
-    void UpdateColliderLocation();
+    virtual void UpdateColliderLocation();
     QVector3D GetLocation();
 
 };

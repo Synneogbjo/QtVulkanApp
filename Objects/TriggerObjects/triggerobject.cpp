@@ -4,3 +4,9 @@ TriggerObject::TriggerObject(const std::string& name, Collider* collider, const 
 {
     mTriggerCollider = triggerCollider;
 }
+
+void TriggerObject::UpdateColliderLocation()
+{
+    mCollider->SetLocation(GetLocation());
+    mTriggerCollider->SetLocation(GetLocation());
+}
