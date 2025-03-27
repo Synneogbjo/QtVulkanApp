@@ -3,23 +3,7 @@
 #include <QDebug>
 VkTriangleSurface::VkTriangleSurface() : VisualObject()
 {
-    VKVertex v1{0.0f,   0.0f,  0.0f,   1.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    VKVertex v2{1.0f,   0.0f,  0.0f,   0.0f, 1.0f, 0.0f, 0.0f, 0.0f};
-    VKVertex v3{0.0f,   1.0f,  0.0f,   0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
-    VKVertex v4{1.0f,   1.0f,  0.0f,   1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
-    //    Vertex v1{0.0f,   0.0f,  0.0f,   1.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    //    Vertex v2{1.0f,   0.0f,  0.0f,   0.0f, 1.0f, 0.0f, 0.0f, 0.0f};
-    //    Vertex v3{0.0f,   1.0f,  0.0f,   0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
-    //    Vertex v4{1.0f,   1.0f,  0.0f,   1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
-    mVertices.push_back(v1);
-    mVertices.push_back(v2);
-    mVertices.push_back(v3);
-    mVertices.push_back(v3);
-    mVertices.push_back(v2);
-    mVertices.push_back(v4);
 
-    mMatrix.scale(0.5f);
-    mMatrix.translate(0.5f, 0, 0); // fra startNextFrame
 }
 
 VkTriangleSurface::VkTriangleSurface(const std::string& filename)

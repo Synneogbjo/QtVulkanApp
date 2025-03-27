@@ -32,6 +32,8 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 
 void RenderWindow::createBuffer(VkDevice logicalDevice, const VkDeviceSize uniAlign, VisualObject* visualObject, VkBufferUsageFlags usage)
 {
+    if (visualObject->mVertices.empty()) return;
+
     VkBufferCreateInfo bufferInfo{};
     memset(&bufferInfo, 0, sizeof(bufferInfo)); //Clear out the memory
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO; // Set the structure type
@@ -171,7 +173,7 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
 
     AppendObject(new object("house", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-2.f,0.f,1.5f), QVector3D(2.f,4.f,6.5f), false), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house.txt"));
     AppendObject(new Door("door", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f, 2.f, 0.f)), "C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(-1.f,0.f,0.f), QVector3D(1.f,2.f,3.f))));
-    AppendObject(new Teleporter("houseTeleportInto", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f)),"C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/door1.txt", new AABBCollider(QVector3D(0.f,0.f,0.f),QVector3D(-0.5f,0.f,0.f),QVector3D(0.5f,2.f,0.5f)), QVector3D(30.f,0.f,0.f)));
+    AppendObject(new Teleporter("houseTeleportInto", new AABBCollider(QVector3D(0.f,0.f,0.f), QVector3D(0.f,0.f,0.f),QVector3D(0.f,0.f,0.f)),"", new AABBCollider(QVector3D(0.f,0.f,1.f),QVector3D(-0.5f,0.f,0.0f),QVector3D(0.5f,2.f,2.f)), QVector3D(30.f,0.f,0.f)));
     AppendMesh(new VkTriangleSurface("C:/Users/bjorn/Documents/GitHub/Vulkan/QtVulkanApp/meshes/house_inside.txt"));
     mMeshes.at(mMeshes.size() - 1)->mMatrix.translate(30.f,0.f,0.f);
     qDebug() << "mesh at " << mMeshes.at(mMeshes.size() - 1)->mMatrix;
