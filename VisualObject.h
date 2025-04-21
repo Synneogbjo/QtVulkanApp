@@ -27,6 +27,7 @@ public:
     inline void setIBufferMemory(VkDeviceMemory bufferMemoryIn) { mIndexBuffer.mBufferMemory = bufferMemoryIn; }
     inline void setName(std::string name) { mName = name; }
     inline std::string getName() const { return mName; }
+    inline void setDrawType(int type) { drawType = type; }
     inline int getDrawType() const { return drawType; }
     inline QMatrix4x4 getMatrix() const {return mMatrix;}
 	inline std::vector<Vertex> getVertices() const { return mVertices; }

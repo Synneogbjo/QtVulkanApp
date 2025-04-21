@@ -3,6 +3,18 @@
 
 #include "Vertex.h"
 
+Vertex::Vertex(QVector3D pos, QVector3D normal, QVector2D uv)
+{
+    x = pos.x();
+    y = pos.y();
+    z = pos.z();
+    r = normal.x();
+    g = normal.y();
+    b = normal.z();
+    u = uv.x();
+    v = uv.y();
+}
+
 std::ostream& operator<< (std::ostream& os, const Vertex& v) {
     os << std::fixed;
     os << "(" << v.x << ", " << v.y << ", " << v.z << ") ";

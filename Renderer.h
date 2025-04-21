@@ -110,6 +110,7 @@ private:
     VkSurfaceFormatKHR mSurfaceFormat{};
 
     TextureHandle mTextureHandle{};
+    TextureHandle mBowserTextureHandle{};
 
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags requiredProperties);
 

@@ -8,6 +8,7 @@
 #include "TriangleSurface.h"
 #include "HeightMap.h"
 #include "stb_image.h"
+#include "ObjMesh.h"
 
 /*** Renderer class ***/
 Renderer::Renderer(QVulkanWindow *w, bool msaa)
@@ -35,6 +36,9 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.at(2)->setName("axis");
 	mObjects.at(3)->setName("terrain");
     static_cast<HeightMap*>(mObjects.at(3))->makeTerrain("../../Assets/Hund.bmp");
+
+    mObjects.push_back(new ObjMesh("Bowser.obj"));
+    mObjects.at(4)->setName("bowser");
 
     // **************************************
     // Legger inn objekter i map
@@ -128,7 +132,7 @@ void Renderer::initResources()
     pushConstantRange.offset = 0;
     pushConstantRange.size = 16 * sizeof(float);            // 16 floats for the model matrix
 
-	std::array<VkDescriptorSetLayout, 2> descriptorSetLayouts = { mDescriptorSetLayout, mTextureDescriptorSetLayout };
+    std::array<VkDescriptorSetLayout, 2> descriptorSetLayouts = { mDescriptorSetLayout, mTextureDescriptorSetLayout };
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -282,7 +286,8 @@ void Renderer::initResources()
     // Create the texture sampler
     createTextureSampler();
 
-    mTextureHandle = createTexture("../../Assets/Hund.bmp"); //Heightmap.jpg HundA.bmp
+    mTextureHandle = createTexture("../../Assets/hund.bmp"); //Heightmap.jpg HundA.bmp
+    //mBowserTextureHandle = createTexture("../../Assets/hund.bmp");
 
     // getVulkanHWInfo(); // if you want to get info about the Vulkan hardware
 }
@@ -336,7 +341,8 @@ void Renderer::startNextFrame()
         setModelMatrix((*it)->getMatrix()); //mvp);
         
         // Bind the texture descriptor set
-		setTexture(mTextureHandle, commandBuffer);
+        /*if ((*it)->getName() != "bowser")*/ setTexture(mTextureHandle, commandBuffer);
+        //else setTexture(mBowserTextureHandle, commandBuffer);
         
         mDeviceFunctions->vkCmdBindVertexBuffers(commandBuffer, 0, 1, &(*it)->getVBuffer(), &vbOffset);
 		//Check if we have an index buffer - if so, use Indexed draw
@@ -865,6 +871,7 @@ void Renderer::releaseResources()
 
     // Destroy textures
     destroyTexture(mTextureHandle);
+    destroyTexture(mBowserTextureHandle);
 
 	if (mTextureSampler) {
 		mDeviceFunctions->vkDestroySampler(dev, mTextureSampler, nullptr);
