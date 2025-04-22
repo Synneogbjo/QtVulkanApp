@@ -98,3 +98,13 @@ void HeightMap::makeTerrain(unsigned char* textureData, int widthIn, int heightI
     //Function not made yet:
     //calculateHeighMapNormals();
 }
+
+std::vector<uint32_t> HeightMap::getIndices()
+{
+    return mIndices;
+}
+
+std::vector<Vertex> HeightMap::getVertices()
+{
+    return mVertices;
+}

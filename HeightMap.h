@@ -13,6 +13,9 @@ public:
 
     void makeTerrain(unsigned char* textureData, int width, int height);
 
+    std::vector<uint32_t> getIndices();
+    std::vector<Vertex> getVertices();
+
 private:
 	int mWidth{ 0 };
 	int mHeight{ 0 };

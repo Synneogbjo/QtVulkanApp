@@ -9,6 +9,7 @@
 #include "HeightMap.h"
 #include "stb_image.h"
 #include "ObjMesh.h"
+#include "barycentric.h"
 
 /*** Renderer class ***/
 Renderer::Renderer(QVulkanWindow *w, bool msaa)
@@ -29,15 +30,20 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(new Triangle());
     mObjects.push_back((new TriangleSurface()));
     mObjects.push_back((new WorldAxis()));
-	mObjects.push_back(new HeightMap());
+
+    terrain = new HeightMap();
+
+    mObjects.push_back(terrain);
     // Dag 030225
     mObjects.at(0)->setName("tri");
     mObjects.at(1)->setName("quad");
     mObjects.at(2)->setName("axis");
 	mObjects.at(3)->setName("terrain");
-    static_cast<HeightMap*>(mObjects.at(3))->makeTerrain("../../Assets/Hund.bmp");
+    terrain->makeTerrain("../../Assets/Hund.bmp");
 
-    mObjects.push_back(new ObjMesh("Bowser.obj"));
+    setPlayer(new Player("Bowser.obj"));
+
+    mObjects.push_back(getPlayer());
     mObjects.at(4)->setName("bowser");
 
     // **************************************
@@ -48,7 +54,9 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     //     mMap.insert(std::pair<std::string, VisualObject*>{(*it)->getName(),*it});
 
 	//Inital position of the camera
-    mCamera.setPosition(QVector3D(-0.5, -0.5, -8));
+    mCamera.setPosition(QVector3D(-0.5, -0.5, -100));
+    mCamera.rotate(25,1.f,0.f,0.f);
+    mCamera.translate(0.f,0.f,-30.f);
 
     //Need access to our VulkanWindow so making a convenience pointer
     mVulkanWindow = dynamic_cast<VulkanWindow*>(w);
@@ -58,6 +66,8 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 void Renderer::initResources()
 {
     qDebug("\n ***************************** initResources ******************************************* \n");
+
+    qDebug() << "Cartesian: 10, 5 | Barycentric height: " << barycentric::getPositionInTerrain(static_cast<HeightMap*>(mObjects.at(3)), 10, 5);
 
     VkDevice logicalDevice = mWindow->device();
     mDeviceFunctions = mWindow->vulkanInstance()->deviceFunctions(logicalDevice);
@@ -303,7 +313,9 @@ void Renderer::initResources()
     createTextureSampler();
 
     mTextureHandle.try_emplace("default", createTexture("../../Assets/hund.bmp")); //Heightmap.jpg HundA.bmp
-    mTextureHandle.try_emplace("bowser", createTexture("../../Assets/bowser.bmp"));
+    //mTextureHandle.try_emplace("bowser", createTexture("../../Assets/bowser.bmp"));
+
+
 
     // getVulkanHWInfo(); // if you want to get info about the Vulkan hardware
 }
@@ -331,7 +343,7 @@ void Renderer::startNextFrame()
     //Handeling input from keyboard and mouse is done in VulkanWindow
     //Has to be done each frame to get smooth movement
     mVulkanWindow->handleInput();
-    mCamera.update();               //input can have moved the camera
+    //mCamera.update();               //input can have moved the camera
 
     VkCommandBuffer commandBuffer = mWindow->currentCommandBuffer();
 
@@ -1297,4 +1309,10 @@ void Renderer::destroyTexture(TextureHandle& textureHandle)
 	mDeviceFunctions->vkDestroyImageView(mWindow->device(), textureHandle.mImageView, nullptr);
     mDeviceFunctions->vkDestroyImage(mWindow->device(), textureHandle.mImage, nullptr);
 	mDeviceFunctions->vkFreeMemory(mWindow->device(), textureHandle.mTextureMemory, nullptr);
+}
+
+
+void Renderer::setPlayer(Player* newPlayer)
+{
+    player = newPlayer;
 }

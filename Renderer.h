@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "VisualObject.h"
 #include "Utilities.h"
+#include "Player.h"
 
 struct FPipeline
 {
@@ -45,6 +46,9 @@ public:
 
     std::vector<VisualObject*>& getObjects() { return mObjects; }
     std::unordered_map<std::string, VisualObject*>& getMap() { return mMap; }
+
+    void setPlayer(Player* newPlayer);
+    inline Player* getPlayer() { return player; };
 
 protected:
 
@@ -141,6 +145,9 @@ private:
 		//VkPipelineLayout pipelineLayout{ VK_NULL_HANDLE };    //also should have had a spesific pipeline layout
         VkPipeline pipeline{ VK_NULL_HANDLE };
     } mColorMaterial;
+
+    Player* player{};
+    HeightMap* terrain{};
 };
 
 #endif // RENDERER_H

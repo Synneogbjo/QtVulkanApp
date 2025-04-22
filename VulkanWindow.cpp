@@ -232,4 +232,23 @@ void VulkanWindow::handleInput()
         if (mInput.E)
             mCamera->updateHeigth(-mCameraSpeed);
     }
+
+    Renderer* r = dynamic_cast<Renderer*>(mRenderer);
+
+    if (!r) return;
+
+    Player* p = r->getPlayer();
+
+    if (p)
+    {
+        if (mInput.LEFT)
+            p->move(-0.1f,0.f,0.f, r->terrain);
+        if (mInput.RIGHT)
+            p->move(0.1f,0.f,0.f, r->terrain);
+        if (mInput.UP)
+            p->move(0.f,0.f,-0.1f, r->terrain);
+        if (mInput.DOWN)
+            p->move(0.f,0.f,0.1f, r->terrain);
+    }
+
 }
