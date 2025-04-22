@@ -8,6 +8,14 @@
 #include "VisualObject.h"
 #include "Utilities.h"
 
+struct FPipeline
+{
+    VkShaderModule vertShaderModule;
+    VkShaderModule fragShaderModule;
+    VkPipelineLayout pipelineLayout{ VK_NULL_HANDLE };    //also should have had a spesific pipeline layout
+    VkPipeline pipeline{ VK_NULL_HANDLE };
+};
+
 class Renderer : public QVulkanWindowRenderer
 {
 public:
@@ -76,6 +84,8 @@ protected:
     VkPipeline mPipeline1{ VK_NULL_HANDLE };
     VkPipeline mPipeline2{ VK_NULL_HANDLE };
 
+    std::map<std::string, VkPipeline> mPipelines;
+
     VkQueue mGraphicsQueue{ VK_NULL_HANDLE };
 
 private:
@@ -109,8 +119,7 @@ private:
 
     VkSurfaceFormatKHR mSurfaceFormat{};
 
-    TextureHandle mTextureHandle{};
-    TextureHandle mBowserTextureHandle{};
+    std::map<std::string, TextureHandle> mTextureHandle{};
 
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags requiredProperties);
 

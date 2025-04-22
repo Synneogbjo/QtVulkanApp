@@ -10,4 +10,6 @@ Triangle::Triangle() : VisualObject()
 
 	//Temporary positioning
     mMatrix.translate(-0.25f, 0, 0);
+
+    drawType = 1;
 }

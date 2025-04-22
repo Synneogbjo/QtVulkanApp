@@ -84,6 +84,10 @@ void Renderer::initResources()
     //DescriptorSets must be made before the Pipelines
     createDescriptorSetLayouts();
 
+    FPipeline texturePipeline{};
+
+
+
     /********************************* Vertex layout: *********************************/
 	VkVertexInputBindingDescription vertexBindingDesc{};    //Updated to a more common way to write it
 	vertexBindingDesc.binding = 0;
@@ -267,6 +271,18 @@ void Renderer::initResources()
     if (result != VK_SUCCESS)
         qFatal("Failed to create graphics pipeline: %d", result);
 
+    //Making a color pipeline
+    mPipelines.try_emplace("color", mPipeline1);
+
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    rasterization.lineWidth = 1.0f;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pStages = shaderStagesC;
+
+    result = mDeviceFunctions->vkCreateGraphicsPipelines(logicalDevice, mPipelineCache, 1, &pipelineInfo, nullptr, &(mPipelines.find("color")->second));
+
+    if (result != VK_SUCCESS)
+        qFatal("Failed to create graphics pipeline: %d", result);
 
 	// Destroying the shader modules, we won't need them anymore after the pipeline is created
     if (vertShaderModule)
@@ -286,8 +302,8 @@ void Renderer::initResources()
     // Create the texture sampler
     createTextureSampler();
 
-    mTextureHandle = createTexture("../../Assets/hund.bmp"); //Heightmap.jpg HundA.bmp
-    //mBowserTextureHandle = createTexture("../../Assets/hund.bmp");
+    mTextureHandle.try_emplace("default", createTexture("../../Assets/hund.bmp")); //Heightmap.jpg HundA.bmp
+    mTextureHandle.try_emplace("bowser", createTexture("../../Assets/bowser.bmp"));
 
     // getVulkanHWInfo(); // if you want to get info about the Vulkan hardware
 }
@@ -332,17 +348,38 @@ void Renderer::startNextFrame()
     for (std::vector<VisualObject*>::iterator it=mObjects.begin(); it!=mObjects.end(); it++)
     {
         //Draw type
-		if ((*it)->getDrawType() == 0)
+        switch ((*it)->getDrawType())
+        {
+        case 0:
 			mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline1);
-		else
+            break;
+
+        case 1:
+            if (mPipelines.find("color") != mPipelines.end())
+            {
+                mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelines.find("color")->second);
+                break;
+            }
+            continue;
+
+        default:
 			mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mColorMaterial.pipeline);
+            break;
+        }
 
         QMatrix4x4 mvp = mCamera.projectionMatrix() * mCamera.viewMatrix() * (*it)->getMatrix();
         setModelMatrix((*it)->getMatrix()); //mvp);
-        
-        // Bind the texture descriptor set
-        /*if ((*it)->getName() != "bowser")*/ setTexture(mTextureHandle, commandBuffer);
-        //else setTexture(mBowserTextureHandle, commandBuffer);
+
+        if (mTextureHandle.find((*it)->getName()) != mTextureHandle.end())
+        {
+            setTexture(mTextureHandle.at((*it)->getName()), commandBuffer);
+        }
+        else if (!mTextureHandle.empty())
+        {
+            //qDebug() << "Using default texture " << mTextureHandle.begin()->first;
+            if (mTextureHandle.find("default") != mTextureHandle.end()) setTexture(mTextureHandle.find("default")->second, commandBuffer);
+            else setTexture(mTextureHandle.begin()->second, commandBuffer);
+        }
         
         mDeviceFunctions->vkCmdBindVertexBuffers(commandBuffer, 0, 1, &(*it)->getVBuffer(), &vbOffset);
 		//Check if we have an index buffer - if so, use Indexed draw
@@ -870,8 +907,12 @@ void Renderer::releaseResources()
     }
 
     // Destroy textures
-    destroyTexture(mTextureHandle);
-    destroyTexture(mBowserTextureHandle);
+    for (auto t : mTextureHandle)
+    {
+        destroyTexture(t.second);
+    }
+
+    mTextureHandle.clear();
 
 	if (mTextureSampler) {
 		mDeviceFunctions->vkDestroySampler(dev, mTextureSampler, nullptr);

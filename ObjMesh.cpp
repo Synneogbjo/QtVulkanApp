@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QVector3D>
 
-ObjMesh::ObjMesh(const std::string& filename)
+ObjMesh::ObjMesh(const std::string& filename, const std::string& texturefilename)
 {
     if (!readObjFile(filename))  //If file not read, just make a triangle
     {
@@ -167,3 +167,7 @@ bool ObjMesh::readObjFile(const std::string& filename)
     return true;
 }
 
+void ObjMesh::setTexture(const std::string& texturefilename)
+{
+    mTexture = "../../" + texturefilename;
+}
