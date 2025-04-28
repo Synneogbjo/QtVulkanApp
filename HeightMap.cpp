@@ -99,12 +99,12 @@ void HeightMap::makeTerrain(unsigned char* textureData, int widthIn, int heightI
     //calculateHeighMapNormals();
 }
 
-std::vector<uint32_t> HeightMap::getIndices()
+std::vector<uint32_t>& HeightMap::getIndices()
 {
     return mIndices;
 }
 
-std::vector<Vertex> HeightMap::getVertices()
+std::vector<Vertex>& HeightMap::getVertices()
 {
     return mVertices;
 }

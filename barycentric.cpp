@@ -6,8 +6,8 @@ float barycentric::getPositionInTerrain(HeightMap* Terrain, float PositionX, flo
 {
     QVector2D ObjPos = QVector2D(PositionX,PositionZ);
 
-    const auto& indices = Terrain->getIndices();
-    const auto& vertices = Terrain->getVertices();
+    const std::vector<uint32_t>& indices = Terrain->getIndices();
+    const std::vector<Vertex>& vertices = Terrain->getVertices();
 
     for(size_t i = 0; i+2 < indices.size(); i+=3)
     {
